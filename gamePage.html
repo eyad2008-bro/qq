@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>أروى والقفزات السعيدة 🐸❤️</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to bottom right, #d0f4de, #a9def9);
+      overflow: hidden;
+      text-align: center;
+    }
+    #game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #frog {
+      width: 60px;
+      height: 60px;
+      position: absolute;
+      bottom: 10px;
+      left: calc(50% - 30px);
+      transition: transform 0.1s;
+    }
+    .heart {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      clip-path: polygon(50% 0%, 0% 40%, 50% 100%, 100% 40%);
+      opacity: 0.8;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      background: rgba(255,255,255,0.8);
+      padding: 10px 20px;
+      border-radius: 15px;
+      font-size: 1.2em;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <img id="frog" src="https://em-content.zobj.net/source/apple/354/frog_1f438.png" alt="frog">
+    <div id="score">القلوب: 0</div>
+  </div>
+
+  <script>
+    const container = document.getElementById('game-container');
+    const frog = document.getElementById('frog');
+    const scoreEl = document.getElementById('score');
+    let score = 0;
+    const frogSize = 60;
+    // Initialize frog position
+    let containerRect = container.getBoundingClientRect();
+    let frogX = (containerRect.width - frogSize) / 2;
+    let frogY = containerRect.height - frogSize - 10;
+    function updateFrog() {
+      frog.style.left = frogX + 'px';
+      frog.style.top = frogY + 'px';
+    }
+    // Keyboard control
+    window.addEventListener('keydown', e => {
+      const step = 20;
+      containerRect = container.getBoundingClientRect();
+      if (e.key === 'ArrowLeft') frogX = Math.max(0, frogX - step);
+      if (e.key === 'ArrowRight') frogX = Math.min(containerRect.width - frogSize, frogX + step);
+      if (e.key === 'ArrowUp') frogY = Math.max(0, frogY - step);
+      if (e.key === 'ArrowDown') frogY = Math.min(containerRect.height - frogSize, frogY + step);
+      updateFrog();
+    });
+    // Touch control
+    container.addEventListener('touchmove', e => {
+      const touch = e.touches[0];
+      containerRect = container.getBoundingClientRect();
+      frogX = touch.clientX - containerRect.left - frogSize/2;
+      frogY = touch.clientY - containerRect.top - frogSize/2;
+      frogX = Math.max(0, Math.min(containerRect.width - frogSize, frogX));
+      frogY = Math.max(0, Math.min(containerRect.height - frogSize, frogY));
+      updateFrog();
+      e.preventDefault();
+    }, { passive: false });
+    // Hearts array
+    const hearts = [];
+    function spawnHeart() {
+      containerRect = container.getBoundingClientRect();
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.x = Math.random() * (containerRect.width - 30);
+      heart.y = -30; // start above
+      heart.style.left = heart.x + 'px';
+      heart.style.top = heart.y + 'px';
+      container.appendChild(heart);
+      hearts.push(heart);
+    }
+    function gameLoop() {
+      containerRect = container.getBoundingClientRect();
+      for (let i = hearts.length - 1; i >= 0; i--) {
+        const heart = hearts[i];
+        heart.y += 2; // speed downwards
+        heart.style.top = heart.y + 'px';
+        // Remove if off-screen bottom
+        if (heart.y > containerRect.height) {
+          heart.remove(); hearts.splice(i, 1); continue;
+        }
+        // Collision
+        const frogRect = frog.getBoundingClientRect();
+        const heartRect = heart.getBoundingClientRect();
+        if (frogRect.left < heartRect.left + heartRect.width &&
+            frogRect.left + frogRect.width > heartRect.left &&
+            frogRect.top < heartRect.top + heartRect.height &&
+            frogRect.top + frogRect.height > heartRect.top) {
+          heart.remove(); hearts.splice(i, 1);
+          score++;
+          scoreEl.innerText = `القلوب: ${score}`;
+        }
+      }
+      requestAnimationFrame(gameLoop);
+    }
+    // Start game
+    updateFrog();
+    setInterval(spawnHeart, 1500);
+    requestAnimationFrame(gameLoop);
+  </script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عيد ميلاد أروى 🎉</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to bottom right, #ffdee9, #b5fffc);
+      color: #333;
+      text-align: center;
+      overflow-x: hidden;
+    }
+    .container {
+      padding: 50px 20px;
+    }
+    h1 {
+      font-size: 3em;
+      color: #ff4081;
+      margin-bottom: 10px;
+      animation: bounce-title 1s infinite alternate;
+    }
+    @keyframes bounce-title {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+    .countdown {
+      font-size: 2em;
+      margin-top: 20px;
+      color: #009688;
+    }
+    .balloons { position: absolute; width: 100%; top: 0; left: 0; pointer-events: none; }
+    .balloon {
+      width: 50px; height: 70px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      position: absolute;
+      animation: float 6s infinite ease-in-out;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-100px); opacity: 0; }
+    }
+    .music-btn, .secret-btn {
+      margin: 20px; padding: 10px 20px;
+      background-color: #ff4081; color: white;
+      border: none; border-radius: 10px;
+      font-size: 1em; cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .music-btn:hover, .secret-btn:hover { transform: scale(1.05); }
+    .secret-message {
+      display: none; margin-top: 20px;
+      background-color: #fff3e0; padding: 20px;
+      border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    form { margin-top: 30px; }
+    input[type="text"], textarea {
+      width: 80%; border-radius: 10px;
+      padding: 10px; font-family: 'Cairo', sans-serif;
+      margin-bottom: 10px;
+    }
+    textarea { height: 100px; }
+    .messages {
+      margin-top: 20px; background-color: #e1f5fe;
+      padding: 20px; border-radius: 15px;
+    }
+    .message {
+      padding: 10px; border-bottom: 1px solid #ccc;
+      text-align: right;
+      animation: fade-in 0.5s ease;
+    }
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .surprise-btn {
+      background-color: #ff5722;
+      color: white;
+      font-size: 1.2em;
+      padding: 12px 30px;
+      margin-top: 30px;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      font-weight: bold;
+    }
+    .surprise-btn:hover {
+      transform: scale(1.1);
+    }
+    .password-box {
+      display: none;
+      margin-top: 20px;
+      background-color: #f1f8e9;
+      padding: 20px;
+      border-radius: 15px;
+    }
+    .password-input {
+      padding: 7px;
+      width: 60%;
+      border-radius: 10px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>كل عام وأنتِ أجمل أروى 💖</h1>
+    <p class="countdown" id="countdown"></p>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/3468/3468086.png" alt="كعكة عيد ميلاد" style="width:150px;animation:bounce-title 3s infinite ease-in-out;">
+
+    <button class="secret-btn" onclick="showSecret();">🎁 اضغطي هنا للمفاجأة</button>
+    <div id="secretMessage" class="secret-message">
+      💌 أروى، أتمنى لكِ عامًا مليئًا بالسعادة والنجاح والضحك! أنتِ تستحقين كل خير 💖
+    </div>
+
+    <h2>كلمة خاصة مني لكِ 💖</h2>
+    <p style="background-color:#fff8e1; padding:20px; border-radius:15px; color:#4e342e; font-size:1.2em;">
+      أنا فخور جدًا بك يا أروى، وكل يوم أراكِ تزدادين جمالاً وتألقًا وذكاءً. أتمنى أن يكون عامكِ الجديد مليئًا بالنجاح والفرح والمغامرات الجميلة التي تستحقينها. دمتِ نجمًا يضيء حياة من حوله ✨
+    </p>
+
+    <form onsubmit="sendMessage(event)">
+      <h2>اكتبي / اكتب تهنئتك لأروى 🎈</h2>
+      <input type="text" id="nameInput" placeholder="اسمك" required><br>
+      <textarea id="wishInput" placeholder="اكتبي هنا..." required></textarea><br>
+      <button type="submit" class="music-btn">إرسال التهنئة</button>
+    </form>
+
+    <div id="messages" class="messages">
+      <h3>💬 تهاني الأصدقاء:</h3>
+    </div>
+
+    <!-- زر المفاجأة الكبرى -->
+    <button class="surprise-btn" onclick="showPasswordBox()">اضغطي هنا للمفاجأة الكبرى (أروى فقط)</button>
+
+    <div id="passwordBox" class="password-box">
+      <label for="passwordInput">أدخل الرقم السري:</label><br>
+      <input type="password" id="passwordInput" class="password-input" placeholder="رقم المرور"><br>
+      <button onclick="checkPassword()">ادخل</button>
+    </div>
+  </div>
+
+  <div class="balloons">
+    <div class="balloon" style="left:10%;background:#ff4081;"></div>
+    <div class="balloon" style="left:30%;background:#ffd740;"></div>
+    <div class="balloon" style="left:50%;background:#64ffda;"></div>
+    <div class="balloon" style="left:70%;background:#a1887f;"></div>
+    <div class="balloon" style="left:90%;background:#81d4fa;"></div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGaGd_NV5bXUoSEcpHKRXMAVuwDdsj4WYbfHY6UQI79AF8YpTQqI5x_rat1-Cbxymg5Q/exec";
+
+    function updateCountdown() {
+      const now = new Date(); let year = now.getFullYear();
+      const eventDate = new Date(year,7,8,0,0,0);
+      if(now>eventDate) eventDate.setFullYear(year+1);
+      const diff=eventDate-now;
+      const d=Math.floor(diff/86400000), h=Math.floor(diff%86400000/3600000);
+      const m=Math.floor(diff%3600000/60000), s=Math.floor(diff%60000/1000);
+      document.getElementById("countdown").innerText =
+        `متبقي ${d} يوم و ${h} ساعة و ${m} دقيقة و ${s} ثانية على عيد ميلادك!`;
+    }
+    setInterval(updateCountdown,1000);
+    updateCountdown();
+
+    function showSecret(){
+      const box=document.getElementById("secretMessage");
+      box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+
+    function sendMessage(e){
+      e.preventDefault();
+      const name = document.getElementById("nameInput").value.trim();
+      const text = document.getElementById("wishInput").value.trim();
+      if(!name || !text) return;
+      const form = new FormData();
+      form.append("message", `${name}: ${text}`);
+      fetch(SCRIPT_URL, { method: 'POST', body: form })
+        .then(() => {
+          document.getElementById("nameInput").value = "";
+          document.getElementById("wishInput").value = "";
+          fetchMessages();
+        })
+        .catch(err => { console.error(err); alert('خطأ بالإرسال'); });
+    }
+
+    function fetchMessages(){
+      fetch(SCRIPT_URL)
+        .then(r => r.json())
+        .then(data => {
+          const cont = document.getElementById("messages");
+          cont.innerHTML = '<h3>💬 تهاني الأصدقاء:</h3>' +
+            data.reverse().map(msg => `<div class="message">${msg}</div>`).join('');
+        })
+        .catch(() => {
+          document.getElementById("messages").innerHTML = '<h3>💬 تهاني الأصدقاء:</h3><p>لا يمكن جلب التهاني الآن.</p>';
+        });
+    }
+    fetchMessages();
+
+    function showPasswordBox() {
+      document.getElementById("passwordBox").style.display = "block";
+    }
+
+    function checkPassword() {
+      const enteredPassword = document.getElementById("passwordInput").value;
+      const correctPassword = "882009";
+      if (enteredPassword === correctPassword) {
+        window.open("secret.html", "_blank"); // يفتح تبويبة جديدة للمفاجأة
+      } else {
+        alert("الرقم السري غير صحيح!");
+      }
+    }
+  </script>
+</body>
+</html>
